@@ -13,12 +13,12 @@ class CreateBudgetTable extends Migration
      */
     public function up()
     {
-        Schema::create('budget', function (Blueprint $table) {
+        Schema::create('budgets', function (Blueprint $table) {
             $table->id();
             $table->float('balance');
             $table->timestamps();
         });
-        Schema::table('budget', function($table){
+        Schema::table('budgets', function($table){
             $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
         });
     }
@@ -30,7 +30,7 @@ class CreateBudgetTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('budget');
+        Schema::dropIfExists('budgets');
         // Schema::table('budget', function($table){
         //     $table->dropForeign('user_id');
         // });
