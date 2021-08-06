@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\BudgetController;
+use App\Http\Controllers\PaymentsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,10 +20,11 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth'])->name('dashboard');
 
-Route::resource('/test', BudgetController::class)->middleware(['auth']);
+Route::resource('/dashboard', BudgetController::class)->middleware(['auth']);
+Route::resource('/payments', PaymentsController::class)->middleware(['auth']);
 
 require __DIR__.'/auth.php';

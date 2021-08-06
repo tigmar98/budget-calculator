@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;
+use App\Models\Budget;
+use App\Models\Payment;
 
-class BudgetController extends Controller
+class PaymentsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,11 +16,12 @@ class BudgetController extends Controller
      */
     public function index()
     {
-        // dd(Auth::user()->budget[0]->payments[0]->payment);
+
         $balance = Auth::user()->budget[0]->balance;
-        return view('dashboard', [
-            'balance' => $balance,
-        ]);
+
+        return view('payments.payments', [
+                'balance' => $balance,
+            ]);
     }
 
     /**
@@ -28,7 +31,12 @@ class BudgetController extends Controller
      */
     public function create()
     {
-        //
+        
+        $balance = Auth::user()->budget[0]->balance;
+
+        return view('payments.create', [
+            'balance' => $balance
+        ]);
     }
 
     /**
@@ -37,9 +45,26 @@ class BudgetController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Payment $payment, Budget $budget)
     {
-        //
+        $request->validate([
+            'payment_type' => 'required',
+            'amount' => 'required'
+        ]);
+
+        $payment_type = $request->payment_type;
+        $amount = $request->amount;
+        $user_id = Auth::user()->id;
+        $usr_budget = $budget->where('user_id', $user_id)->first();
+        $new_balance = $usr_budget->balance;
+        if($payment_type == 1){
+            $new_balance = $usr_budget->balance + $amount;
+        } elseif($payment_type == 2){
+            $new_balance = $usr_budget->balance - $amount;
+        }
+        $payment->create(['payment' => $amount, 'budget_id' => $usr_budget->id, 'payment_type' => $payment_type]);
+        $budget->where('user_id', $user_id)->update(['balance' => $new_balance]);
+        return redirect('/payments');
     }
 
     /**

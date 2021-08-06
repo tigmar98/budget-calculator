@@ -11,7 +11,8 @@ class Payment extends Model
 
     protected $fillable = [
         'payment',
-        'budget_id'
+        'budget_id',
+        'payment_type'
     ];
 
     public function budget(){
